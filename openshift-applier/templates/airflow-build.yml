@@ -25,6 +25,7 @@ objects:
       contextDir: "${CONTEXT_DIR}"
       git:
         uri: "${GIT_REPO}"
+        ref: "${GIT_REPO_REF}"
       type: Git
     strategy:
       dockerStrategy:
@@ -62,4 +63,9 @@ parameters:
   displayName: URL to git repo
   description: URL to git repo
   required: true
-  value: https://github.com/kbristow/airflow-openshift
+  value: https://github.com/mcanoy/airflow-openshift
+- name: GIT_REPO_REF
+  displayName: Git branch tag
+  description: Set this to a branch name, tag or other ref of your repository if you
+    are not using the default (master) branch.
+  value: master

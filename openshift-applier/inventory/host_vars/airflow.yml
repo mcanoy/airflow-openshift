@@ -14,9 +14,11 @@ airflow:
     scheduler:
       NAME: airflow-scheduler
       CONTEXT_DIR: scheduler
+      GIT_REPO_REF: airflow-1.10
     web:
       NAME: "{{ airflow_webserver_name }}"
       CONTEXT_DIR: webserver
+      GIT_REPO_REF: airflow-1.10
   deploy:
     web:
       NAME: "{{ airflow_webserver_name }}"

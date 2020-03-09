@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM rhscl/python-36-rhel7
 
 ARG AIRFLOW_VERSION=1.10.0
 
@@ -6,17 +6,19 @@ ENV AIRFLOW_HOME=/usr/local/airflow
 
 ENV SLUGIFY_USES_TEXT_UNIDECODE=yes
 
-ENV USER=airflow USER_ID=1001
+ENV USER=airflow USER_UID=1001
 
-RUN useradd -ms /bin/bash -d ${AIRFLOW_HOME} --uid ${USER_ID} airflow 
+RUN echo "Airflow version: ${AIRFLOW_VERSION}"
 
-RUN pip install --no-cache-dir apache-airflow['crypto','kubernetes','postgres']==${AIRFLOW_VERSION}
+#RUN useradd -ms /bin/bash -d ${AIRFLOW_HOME} --uid ${USER_UID} airflow 
+
+RUN pip install --no-cache-dir apache-airflow['crypto','kubernetes','postgres']
 
 COPY ./scripts/entrypoint.sh /entrypoint.sh
 
-RUN chown -R airflow: ${AIRFLOW_HOME}
+#RUN chown -R airflow: ${AIRFLOW_HOME}
 
-USER ${USER_ID}
+USER ${USER_UID}
 WORKDIR ${AIRFLOW_HOME}
 ENTRYPOINT ["/entrypoint.sh"]
 

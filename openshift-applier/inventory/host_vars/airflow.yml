@@ -1,0 +1,85 @@
+ansible_connection: local
+
+airflow_namespace: kairflow
+airflow_webserver_name: airflow-webserver
+
+airflow:
+  postgresql:
+    POSTGRESQL_DATABASE: airflow
+    VOLUME_CAPACITY: 2Gi
+    POSTGRESQL_PASSWORD: airflow
+    POSTGRESQL_USER: airflow
+    DATABASE_SERVICE_NAME: airflowdb
+  build:
+    scheduler:
+      NAME: airflow-scheduler
+      CONTEXT_DIR: scheduler
+    web:
+      NAME: "{{ airflow_webserver_name }}"
+      CONTEXT_DIR: webserver
+  deploy:
+    web:
+      NAME: "{{ airflow_webserver_name }}"
+      VOLUME_CAPACITY: 2Gi
+
+
+openshift_cluster_content:
+- galaxy_requirements:
+  - pre_post_requirements.yml # Uses openshift-label role from casl-ansible
+
+- object: airflow
+  content:
+  - name: airflow-build-scheduler
+    template: "{{ playbook_dir }}/templates/airflow-build.yml"
+    params_from_vars: "{{ airflow.build.scheduler }}"
+    namespace: "{{ airflow_namespace }}"
+    tags:
+    - build
+    - airflow
+    - scheduler
+
+  - name: airflow-build-web
+    template: "{{ playbook_dir }}/templates/airflow-build.yml"
+    params_from_vars: "{{ airflow.build.web }}"
+    namespace: "{{ airflow_namespace }}"
+    tags:
+    - build
+    - airflow
+    - web
+
+  - name: airflowdb
+    template: "openshift//postgresql-persistent"
+    params_from_vars: "{{ airflow.postgresql }}"
+    namespace: "{{ airflow_namespace }}"
+    post_steps:
+    - role: casl-ansible/roles/openshift-labels
+      vars:
+        target_namespace: "{{ airflow_namespace }}"
+        label: "app=airflow"
+        target_object: dc
+        target_name: airflowdb
+    - role: casl-ansible/roles/openshift-labels
+      vars:
+        target_namespace: "{{ airflow_namespace }}"
+        label: "app=airflow"
+        target_object: svc
+        target_name: airflowdb
+    - role: casl-ansible/roles/openshift-labels
+      vars:
+        target_namespace: "{{ airflow_namespace }}"
+        label: "app=airflow"
+        target_object: secret
+        target_name: airflowdb
+    tags:
+    - airflow
+    - aiflowdb
+    - postgres
+
+  - name: airflow-webserver-deploy
+    template: "{{ playbook_dir }}/templates/airflow-deploy.yml"
+    params_from_vars: "{{ airflow.deploy.web }}"
+    namespace: "{{ airflow_namespace }}"
+    tags:
+    - airflow
+    - web
+    - deploy

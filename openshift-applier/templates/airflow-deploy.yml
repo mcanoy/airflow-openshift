@@ -57,6 +57,8 @@ objects:
         - env:
           - name: AIRFLOW__CORE__SQL_ALCHEMY_CONN
             value: ${POSTGRES_CONNECTION}
+          - name: AIRFLOW__CORE__LOAD_EXAMPLES
+            value: "False"
           image: "${NAME}"
           imagePullPolicy: Always
           livenessProbe:

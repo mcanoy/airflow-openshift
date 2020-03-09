@@ -2,6 +2,7 @@ ansible_connection: local
 
 airflow_namespace: kairflow
 airflow_webserver_name: airflow-webserver
+airflow_scheduler_name: airflow-scheduler
 
 airflow:
   postgresql:
@@ -23,7 +24,10 @@ airflow:
     web:
       NAME: "{{ airflow_webserver_name }}"
       VOLUME_CAPACITY: 2Gi
-
+    scheduler:
+      NAME: "{{ airflow_scheduler_name }}"
+      PVC_NAME: "{{ airflow_scheduler_name }}"
+      VOLUME_CAPACITY: 2Gi
 
 openshift_cluster_content:
 - galaxy_requirements:
@@ -84,4 +88,13 @@ openshift_cluster_content:
     tags:
     - airflow
     - web
+    - deploy
+
+  - name: airflow-scheduler-deploy
+    template: "{{ playbook_dir }}/templates/scheduler-deploy.yml"
+    params_from_vars: "{{ airflow.deploy.scheduler }}"
+    namespace: "{{ airflow_namespace }}"
+    tags:
+    - airflow
+    - scheduler
     - deploy

@@ -23,7 +23,7 @@ This will deploy an Airflow Webserver with 1 pod and an Airflow Scheduler with 1
 
 ### Node selector via namespace
 
-After creating your project you can alter the namespace to ensure apps in that namespace only deploy to a specific node. First, ensure you have a node that can be specifically labelled. 
+If you manually creating your project, then after creating your project you can alter the namespace to ensure apps in that namespace only deploy to a specific node. First, ensure you have a node that can be specifically labelled. 
 
 ```
 oc get nodes --show-labels

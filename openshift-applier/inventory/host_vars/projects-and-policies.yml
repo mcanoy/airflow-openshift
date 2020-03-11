@@ -1,0 +1,19 @@
+ansible_connection: local
+
+# Create new projects with a given short name and display name
+openshift_cluster_content:
+- object: projectrequest
+  content:
+  - name: "{{ airflow_namespace }}"
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/v1.4.15/project-requests/create-project.yml"
+    params_from_vars: "{{ airflow }}"
+    action: create
+    tags:
+    - "{{ airflow_namespace }}"
+    - projects
+    - "projects-{{ airflow_namespace }}"
+  - name : patch namespace
+    file: "{{ playbook_dir }}/files/namespace.yml"
+    params: "{{ playbook_dir }}/files/namespace-patch.yml"
+    action: patch
+

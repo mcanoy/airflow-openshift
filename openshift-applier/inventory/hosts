@@ -1,2 +1,6 @@
+[projects]
+projects-and-policies
+
 [seed-hosts]
 airflow
+

@@ -1,0 +1,4 @@
+---
+metadata:
+  annotations:
+    openshift.io/node-selector: "region=mcanoy"

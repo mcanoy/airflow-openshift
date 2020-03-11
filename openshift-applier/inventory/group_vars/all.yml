@@ -1,1 +1,6 @@
-openshift_cluster_content: []
+airflow_namespace: kairflow
+
+airflow:
+  NAMESPACE: "{{ airflow_namespace }}"
+  NAMESPACE_DISPLAY_NAME: "{{ airflow_namespace }}"
+  NAMESPACE_DESCRIPTION: "Apache Airflow"

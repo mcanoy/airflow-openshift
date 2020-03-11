@@ -1,3 +1,9 @@
+- name: Create Projects and Policies
+  hosts: projects
+  tasks:
+    - include_role:
+        name: openshift-applier/roles/openshift-applier
+
 - name: Deploy OpenShift-Applier Inventory
   hosts: seed-hosts[0]
   tasks:

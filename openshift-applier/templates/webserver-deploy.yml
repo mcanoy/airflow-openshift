@@ -61,13 +61,23 @@ objects:
             value: "False"
           image: "${NAME}"
           imagePullPolicy: Always
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 21
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
           livenessProbe:
             failureThreshold: 3
             httpGet:
               path: /
               port: 8080
               scheme: HTTP
-            initialDelaySeconds: 240
+            initialDelaySeconds: 120
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 1

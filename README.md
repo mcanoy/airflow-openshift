@@ -8,7 +8,7 @@ This project provides a basic example which can be used to get [Apache Airflow](
   ``` 
     ansible-galaxy install -r requirements.yml --roles-path=roles 
   ```
-  4. Run 
+  3. Run the applier playbook
   ``` 
     ansible-playbook -i inventory/ apply.yml 
   ```

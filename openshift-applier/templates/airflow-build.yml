@@ -1,0 +1,71 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: ${NAME}-build
+objects:  
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      build: ${NAME}
+    name: ${NAME}
+    app: ${NAME}
+  spec:
+    failedBuildsHistoryLimit: 5
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: "${NAME}:${BUILD_TAG}"
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: "${CONTEXT_DIR}"
+      git:
+        uri: "${GIT_REPO}"
+        ref: "${GIT_REPO_REF}"
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: python:3.6
+          namespace: openshift
+      type: Docker
+    successfulBuildsHistoryLimit: 5
+    triggers:
+    - github:
+        secret: gh-secret
+      type: GitHub
+    - generic:
+        secret: gen-secret
+      type: Generic
+    - type: ConfigChange
+    - type: ImageChange
+parameters:
+- name: NAME
+  displayName: Name
+  description: The name assigned to the build.
+  required: true
+  value: airflow
+- name: BUILD_TAG
+  displayName: Build Tag for Docker image
+  description: The tag to apply to the Docker image being built.
+  required: true
+  value: latest
+- name: CONTEXT_DIR
+  displayName: Dir to find Dockerfile
+  description: The context directory in the build.
+  required: true
+- name: GIT_REPO
+  displayName: URL to git repo
+  description: URL to git repo
+  required: true
+  value: https://github.com/mcanoy/airflow-openshift
+- name: GIT_REPO_REF
+  displayName: Git branch tag
+  description: Set this to a branch name, tag or other ref of your repository if you
+    are not using the default (master) branch.
+  value: master
